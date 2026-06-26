@@ -11,12 +11,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Sirf RapidAPI Fetch karne ke liye route
 app.post('/api/download', async (req, res) => {
-    const { url, email } = req.body;
+    const { url } = req.body;
 
-    if (!url) return res.status(400).json({ error: "URL is required" });
-    if (!email) return res.status(401).json({ error: "Please login first" });
+    if (!url) {
+        return res.status(400).json({ error: "URL is required" });
+    }
 
     const options = {
         method: 'POST',

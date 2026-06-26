@@ -71,10 +71,8 @@
 </head>
 <body>
 
-<!-- INITIAL LOADING -->
 <div id="loading-view">⏳ Loading System...</div>
 
-<!-- 1. AUTH INTERFACE -->
 <div class="glass-container" id="auth-view">
     <h2>Welcome Back</h2>
     <p class="subtitle">Login via Firebase to use IG Downloader</p>
@@ -88,7 +86,6 @@
     <div id="auth-msg"></div>
 </div>
 
-<!-- 2. MAIN DOWNLOADER INTERFACE -->
 <div class="glass-container" id="downloader-view">
     <h2>IG Downloader</h2>
     <div id="user-display" class="user-badge"></div>
@@ -108,20 +105,21 @@
     </div>
 </div>
 
-<!-- Firebase Modular SDK -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
     import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
     import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
 
-    // YAHAN APNI FIREBASE CONFIGURATION DAALEIN
+    // Screenshot wali actual configuration
     const firebaseConfig = {
-        apiKey: "YOUR_API_KEY",
-        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-        projectId: "YOUR_PROJECT_ID",
-        storageBucket: "YOUR_PROJECT_ID.appspot.com",
-        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-        appId: "YOUR_APP_ID"
+        apiKey: "AIzaSyBvqZNnkREib87I4HQgDDlSOy2Ms8rDtho",
+        authDomain: "project-406b757a-8717-4cc8-857.firebaseapp.com",
+        databaseURL: "https://project-406b757a-8717-4cc8-857-default-rtdb.firebaseio.com",
+        projectId: "project-406b757a-8717-4cc8-857",
+        storageBucket: "project-406b757a-8717-4cc8-857.firebasestorage.app",
+        messagingSenderId: "629212608512",
+        appId: "1:629212608512:web:d839af4a1155e9304280e5",
+        measurementId: "G-QY4SS91W5Z"
     };
 
     // Initialize Firebase

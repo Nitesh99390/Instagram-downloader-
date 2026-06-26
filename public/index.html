@@ -3,92 +3,199 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Instagram Video Downloader</title>
+    <title>Premium IG Downloader</title>
     <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f0f2f5;
+            /* Premium Instagram Style Gradient Background */
+            background: linear-gradient(135deg, #4f5bd5 0%, #962fbf 25%, #d62976 50%, #fa7e1e 75%, #feda75 100%);
+            background-size: 400% 400%;
+            animation: gradientAnimation 15s ease infinite;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            margin: 0;
+            min-height: 100vh;
+            padding: 20px;
         }
-        .container {
-            background: white;
+
+        @keyframes gradientAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Glassmorphism Card Setup */
+        .glass-container {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(14px);
+            -webkit-backdrop-filter: blur(14px);
+            border-radius: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.2);
             padding: 40px 30px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
             text-align: center;
-            width: 90%;
-            max-width: 450px;
+            width: 100%;
+            max-width: 460px;
+            transition: all 0.4s ease;
         }
+
+        .glass-container:hover {
+            box-shadow: 0 16px 50px 0 rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.35);
+        }
+
         h2 { 
-            background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 25px;
-            font-size: 28px;
+            color: #ffffff;
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            letter-spacing: 0.5px;
         }
+
+        .subtitle {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        /* Premium Glass Input */
+        .input-group {
+            position: relative;
+            margin-bottom: 20px;
+        }
+
         input {
             width: 100%;
-            padding: 14px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            border-radius: 14px;
             font-size: 16px;
-            box-sizing: border-box;
-        }
-        input:focus {
+            color: #ffffff;
             outline: none;
-            border-color: #e1306c;
-            box-shadow: 0 0 5px rgba(225, 48, 108, 0.3);
+            transition: all 0.3s ease;
         }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.2);
+            border-color: rgba(255, 255, 255, 0.7);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+        }
+
+        /* Stylish Button */
         button {
-            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
-            color: white;
+            background: #ffffff;
+            color: #d62976;
             border: none;
-            padding: 14px 25px;
-            border-radius: 8px;
+            padding: 16px 25px;
+            border-radius: 14px;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 700;
             font-size: 16px;
             width: 100%;
-            transition: 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            letter-spacing: 0.5px;
         }
+
         button:hover { 
-            opacity: 0.85; 
+            background: rgba(255, 255, 255, 0.9);
             transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
         }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            background: rgba(255, 255, 255, 0.4);
+            color: rgba(255, 255, 255, 0.8);
+            cursor: not-allowed;
+            transform: none;
+        }
+
         #result { 
-            margin-top: 25px; 
+            margin-top: 30px; 
             word-wrap: break-word;
         }
+
+        /* Glass Download Button */
         .download-btn {
             display: inline-block;
             margin-top: 15px;
-            padding: 12px 25px;
-            background-color: #4CAF50;
+            padding: 14px 30px;
+            background: linear-gradient(135deg, #23d5ab, #23a6d5);
             color: white;
             text-decoration: none;
-            border-radius: 8px;
-            font-weight: bold;
-            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
-            transition: 0.3s;
+            border-radius: 14px;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(35, 213, 171, 0.4);
+            transition: all 0.3s ease;
+            width: 100%;
         }
+
         .download-btn:hover {
-            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(35, 213, 171, 0.6);
         }
-        .error { color: #dc3545; font-weight: 500; }
-        .loader { color: #555; font-style: italic; }
+
+        .error { 
+            color: #ffdde1; 
+            font-weight: 600;
+            background: rgba(220, 53, 69, 0.2);
+            padding: 12px;
+            border-radius: 10px;
+            border: 1px solid rgba(220, 53, 69, 0.3);
+        }
+
+        .loader { 
+            color: #ffffff; 
+            font-weight: 500;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        pre {
+            text-align: left; 
+            font-size: 11px; 
+            background: rgba(0, 0, 0, 0.4); 
+            color: #00ffcc;
+            padding: 15px; 
+            border-radius: 12px; 
+            overflow-x: auto; 
+            max-height: 180px;
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-top: 10px;
+        }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div class="glass-container">
     <h2>IG Downloader</h2>
-    <input type="text" id="ig-url" placeholder="Wklej link z Instagrama tutaj...">
-    <button id="fetchBtn" onclick="downloadMedia()">Pobierz</button>
+    <p class="subtitle">Instagram Reels aur Videos ko ek click me download karein</p>
+    
+    <div class="input-group">
+        <input type="text" id="ig-url" placeholder="Instagram link yahan paste karein...">
+    </div>
+    
+    <button id="fetchBtn" onclick="downloadMedia()">Download Link Nikalein</button>
     <div id="result"></div>
 </div>
 
@@ -99,15 +206,14 @@
         const fetchBtn = document.getElementById('fetchBtn');
 
         if(!urlInput.includes("instagram.com")) {
-            resultDiv.innerHTML = "<p class='error'>❌ Proszę podać prawidłowy link do Instagrama!</p>";
+            resultDiv.innerHTML = "<p class='error'>❌ Bhai, valid Instagram link paste karo!</p>";
             return;
         }
 
-        resultDiv.innerHTML = "<p class='loader'>⏳ Pobieranie danych, proszę czekać...</p>";
+        resultDiv.innerHTML = "<p class='loader'>⏳ Video fetch ho raha hai, thoda sabr karein...</p>";
         fetchBtn.disabled = true;
 
         try {
-            // Wywołanie Twojego backendu na Render
             const response = await fetch('/api/download', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -119,7 +225,7 @@
 
             let downloadLink = null;
 
-            // Sprawdzanie struktury na podstawie podanego kodu JSON
+            // API Response check logic
             if (data && data[0] && data[0].urls && data[0].urls[0] && data[0].urls[0].url) {
                 downloadLink = data[0].urls[0].url;
             } else if (data && data.url) {
@@ -132,18 +238,18 @@
 
             if(downloadLink) {
                 resultDiv.innerHTML = `
-                    <p style="color: #4CAF50; font-weight: bold;">✅ Wideo gotowe!</p> 
-                    <a href="${downloadLink}" target="_blank" class="download-btn">⬇️ Pobierz plik</a>
+                    <p style="color: #ffffff; font-weight: bold; margin-bottom: 10px;">✅ Video Download Ke Liye Taiyar Hai!</p> 
+                    <a href="${downloadLink}" target="_blank" class="download-btn">⬇️ Video Download Karein</a>
                 `;
             } else {
                 resultDiv.innerHTML = `
-                    <p class='error'>❌ Nie udało się wyodrębnić linku.</p>
-                    <pre style="text-align: left; font-size: 11px; background: #ddd; padding: 10px; border-radius: 8px; overflow-x: auto; max-height: 200px;">${JSON.stringify(data, null, 2)}</pre>
+                    <p class='error'>❌ Link nahi mil paya. API ne format badal diya hai.</p>
+                    <pre>${JSON.stringify(data, null, 2)}</pre>
                 `;
             }
         } catch (error) {
             console.error("Fetch Error:", error);
-            resultDiv.innerHTML = "<p class='error'>❌ Błąd serwera. Spróbuj ponownie później.</p>";
+            resultDiv.innerHTML = "<p class='error'>❌ Server down hai ya koi error aaya hai.</p>";
         } finally {
             fetchBtn.disabled = false;
         }

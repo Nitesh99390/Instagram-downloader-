@@ -12,26 +12,13 @@ const PORT = process.env.PORT || 3000;
 
 // ── Security Headers ──
 app.use(helmet({
-    contentSecurityPolicy: false, // frontend inline scripts ke liye off
+    contentSecurityPolicy: false, 
     crossOriginEmbedderPolicy: false
 }));
 
-// ── CORS Config ──
-const allowedOrigins = process.env.ALLOWED_ORIGINS
-    ? process.env.ALLOWED_ORIGINS.split(',')
-    : ['http://localhost:3000'];
-
-app.use(cors({
-    origin: (origin, callback) => {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('CORS: Origin not allowed'));
-        }
-    },
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type']
-}));
+// ── CORS Config (FIXED) ──
+// Ab ye Render aur kisi bhi domain par bina error ke chalega
+app.use(cors());
 
 // ── Body Parser ──
 app.use(express.json({ limit: '10kb' }));
@@ -83,8 +70,7 @@ app.get('/api/health', (req, res) => {
     res.json({
         status: 'ok',
         uptime: Math.floor(process.uptime()),
-        timestamp: new Date().toISOString(),
-        version: process.env.npm_package_version || '3.0.0'
+        timestamp: new Date().toISOString()
     });
 });
 
@@ -167,7 +153,6 @@ app.use((err, req, res, _next) => {
 // ── Start Server ──
 const server = app.listen(PORT, () => {
     console.log(`🚀 ReelSave Pro server running on port ${PORT}`);
-    console.log(`📦 Environment: ${process.env.NODE_ENV || 'development'}`);
 });
 
 // ── Graceful Shutdown ──

@@ -1168,4 +1168,174 @@ async function downloadMedia(){
     else{sdBtn.style.display='';}
 
     const thumb=data?.[0]?.pictureUrl||null;
-    const title=data?.[0]?.meta?.title||'
+    const title=data?.[0]?.meta?.title||'Instagram media';
+    const imgEl=document.getElementById('thumbImg');
+
+    // Update thumb type tag
+    const tagEl=document.getElementById('thumbTypeTag');
+    const tagMap={
+      reel:'🎬 Reel',story:'📖 Story',post:'🖼️ Post',
+      igtv:'📺 IGTV',photo:'📷 Photo',video:'🎬 Video'
+    };
+    tagEl.textContent=tagMap[currentMediaType]||'🎬 Media';
+
+    if(thumb){
+      imgEl.src=thumb;
+      imgEl.style.display='block';
+      document.getElementById('thumbWrap').style.display='block';
+    } else {
+      document.getElementById('thumbWrap').style.display='none';
+    }
+
+    document.getElementById('videoTitle').textContent=title;
+
+    document.querySelector('[data-q="hd"]').click();
+    updateDownloadLink();
+
+    const audioBtn=document.querySelector('[data-q="audio"]');
+    if(downloadLinks.audio){
+      audioBtn.style.opacity='1';audioBtn.disabled=false;
+    } else {
+      audioBtn.style.opacity='0.35';audioBtn.disabled=true;
+    }
+
+    previewCard.style.display='block';
+    setTimeout(()=>previewCard.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
+    status.textContent='';
+    showToast('success','✅','Ready to download!');
+
+    saveHistory(title,url,thumb);
+
+  }catch(err){
+    status.style.color='var(--red)';
+    status.textContent='⚠️ Could not fetch. Please check the link.';
+    showToast('error','❌',err.message||'Something went wrong.');
+  }finally{
+    btn.disabled=false;
+    btn.classList.remove('loading');
+    btnText.textContent='Download Now';
+    btnIcon.textContent='⬇️';
+  }
+}
+
+function onDownloadClick(){
+  if(document.getElementById('dlLink').href.endsWith('#'))return;
+  incCounter();
+  showToast('success','⬇️','Download started!');
+}
+
+function copyLink(){
+  const url=document.getElementById('dlLink').href;
+  if(url.endsWith('#')){showToast('error','❌','No link to copy yet.');return;}
+  navigator.clipboard.writeText(url).then(()=>{
+    showToast('success','🔗','Link copied!');
+  }).catch(()=>showToast('error','❌','Could not copy link.'));
+}
+
+/* ════════════ HISTORY ════════════ */
+function saveHistory(title,url,thumb){
+  let h=JSON.parse(localStorage.getItem('rs_history')||'[]');
+  const exists=h.some(i=>i.url===url);
+  if(!exists){
+    h.unshift({
+      title:title.substring(0,60),
+      url,thumb:thumb||null,
+      time:Date.now(),
+      type:currentMediaType
+    });
+    if(h.length>10)h=h.slice(0,10);
+    localStorage.setItem('rs_history',JSON.stringify(h));
+  }
+  renderHistory();
+}
+
+function renderHistory(){
+  const h=JSON.parse(localStorage.getItem('rs_history')||'[]');
+  const section=document.getElementById('historySection');
+  const list=document.getElementById('historyList');
+  if(!h.length){section.style.display='none';return;}
+  section.style.display='block';
+  list.innerHTML=h.map(item=>{
+    const ago=timeAgo(item.time);
+    const typeIcon={reel:'🎬',story:'📖',post:'🖼️',igtv:'📺',photo:'📷'}[item.type]||'🎬';
+    const thumbHtml=item.thumb
+      ?`<img class="hist-thumb" src="${item.thumb}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;hist-thumb-placeholder&quot;>${typeIcon}</div>'">`
+      :`<div class="hist-thumb-placeholder">${typeIcon}</div>`;
+    return`<div class="history-item">
+      ${thumbHtml}
+      <div class="hist-info">
+        <div class="hist-title">${escHtml(item.title)}</div>
+        <div class="hist-time">🕒 ${ago}</div>
+      </div>
+      <a href="${item.url}" target="_blank" rel="noopener" class="hist-link">Open ↗</a>
+    </div>`;
+  }).join('');
+}
+
+function clearHistory(){
+  if(!confirm('Clear all download history?'))return;
+  localStorage.removeItem('rs_history');
+  renderHistory();
+  showToast('info','🗑️','History cleared.');
+}
+
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60)return'Just now';
+  if(s<3600)return Math.floor(s/60)+' min ago';
+  if(s<86400)return Math.floor(s/3600)+' hr ago';
+  if(s<604800)return Math.floor(s/86400)+' days ago';
+  return new Date(ts).toLocaleDateString();
+}
+
+function escHtml(s){
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ════════════ FAQ ════════════ */
+function toggleFaq(btn){
+  const item=btn.parentElement;
+  const wasOpen=item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!wasOpen)item.classList.add('open');
+}
+
+/* ════════════ TOAST ════════════ */
+function showToast(type,icon,msg){
+  clearTimeout(toastTimer);
+  const toast=document.getElementById('toast');
+  const ti=document.getElementById('toastIcon');
+  const tm=document.getElementById('toastMsg');
+  toast.className='toast '+type;
+  ti.textContent=icon;
+  tm.textContent=msg;
+  toast.classList.add('show');
+  toastTimer=setTimeout(()=>toast.classList.remove('show'),2800);
+}
+
+/* ════════════ INIT ════════════ */
+window.addEventListener('load',()=>{
+  renderHistory();
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  }
+  
+  // FIXED: Smart Auto-detect IG link in clipboard
+  urlInput.addEventListener('focus',async function autoCheck(){
+    if(urlInput.value)return;
+    try{
+      const text=await navigator.clipboard.readText();
+      // Ab ye sirf tabhi paste karega jab link chota ho (500 chars se kam)
+      if(text && text.length < 500 && text.includes('instagram.com')){
+        urlInput.value=text;
+        detectType();
+        clearBtnX.classList.add('show');
+        showToast('info','✨','Instagram link auto-pasted!');
+      }
+    }catch(e){}
+    urlInput.removeEventListener('focus',autoCheck);
+  });
+});
+</script>
+</body>
+</html>

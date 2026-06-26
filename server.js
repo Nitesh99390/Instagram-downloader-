@@ -3,29 +3,15 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const path = require('path');
-const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
-// Supabase Connection
-const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_KEY;
-const supabase = createClient(supabaseUrl, supabaseKey);
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Frontend ko initialization ke liye keys dena
-app.get('/api/config', (req, res) => {
-    res.json({
-        supabaseUrl: process.env.SUPABASE_URL,
-        supabaseKey: process.env.SUPABASE_KEY
-    });
-});
-
-// Download API with User Email tracking
+// Sirf RapidAPI Fetch karne ke liye route
 app.post('/api/download', async (req, res) => {
     const { url, email } = req.body;
 
@@ -45,23 +31,7 @@ app.post('/api/download', async (req, res) => {
 
     try {
         const response = await axios.request(options);
-        const data = response.data;
-        
-        let isSuccess = false;
-        if (data && data[0] && data[0].urls && data[0].urls[0] && data[0].urls[0].url) {
-            isSuccess = true;
-        }
-
-        // Supabase me entry save karna zindagi bhar ke liye
-        await supabase.from('downloads').insert([
-            { 
-                user_email: email, 
-                url: url, 
-                status: isSuccess ? 'Success' : 'Failed' 
-            }
-        ]);
-
-        res.json(data);
+        res.json(response.data);
     } catch (error) {
         console.error("API Error:", error.message);
         res.status(500).json({ error: "Failed to fetch data from API" });

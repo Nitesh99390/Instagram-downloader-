@@ -87,8 +87,8 @@
 
 <div class="container">
     <h2>IG Downloader</h2>
-    <input type="text" id="ig-url" placeholder="Paste Instagram Link Here...">
-    <button id="fetchBtn" onclick="downloadMedia()">Download</button>
+    <input type="text" id="ig-url" placeholder="Wklej link z Instagrama tutaj...">
+    <button id="fetchBtn" onclick="downloadMedia()">Pobierz</button>
     <div id="result"></div>
 </div>
 
@@ -99,15 +99,15 @@
         const fetchBtn = document.getElementById('fetchBtn');
 
         if(!urlInput.includes("instagram.com")) {
-            resultDiv.innerHTML = "<p class='error'>❌ Please enter a valid Instagram link!</p>";
+            resultDiv.innerHTML = "<p class='error'>❌ Proszę podać prawidłowy link do Instagrama!</p>";
             return;
         }
 
-        resultDiv.innerHTML = "<p class='loader'>⏳ Fetching video, please wait...</p>";
+        resultDiv.innerHTML = "<p class='loader'>⏳ Pobieranie danych, proszę czekać...</p>";
         fetchBtn.disabled = true;
 
         try {
-            // Backend API call
+            // Wywołanie Twojego backendu na Render
             const response = await fetch('/api/download', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
@@ -115,11 +115,14 @@
             });
             
             const data = await response.json();
+            console.log("Response:", data);
 
             let downloadLink = null;
 
-            // Alag-alag API response format check karna
-            if (data && data.url) {
+            // Sprawdzanie struktury na podstawie podanego kodu JSON
+            if (data && data[0] && data[0].urls && data[0].urls[0] && data[0].urls[0].url) {
+                downloadLink = data[0].urls[0].url;
+            } else if (data && data.url) {
                 downloadLink = data.url;
             } else if (data && data.data && data.data[0] && data.data[0].url) {
                 downloadLink = data.data[0].url; 
@@ -129,19 +132,18 @@
 
             if(downloadLink) {
                 resultDiv.innerHTML = `
-                    <p style="color: #4CAF50; font-weight: bold;">✅ Video Ready!</p> 
-                    <a href="${downloadLink}" target="_blank" class="download-btn">⬇️ Download File</a>
+                    <p style="color: #4CAF50; font-weight: bold;">✅ Wideo gotowe!</p> 
+                    <a href="${downloadLink}" target="_blank" class="download-btn">⬇️ Pobierz plik</a>
                 `;
             } else {
-                // DEBUGGING KA CODE YAHAN HAI
                 resultDiv.innerHTML = `
-                    <p class='error'>❌ Link format alag hai. Ye code mujhe screenshot me bhejein:</p>
-                    <pre style="text-align: left; font-size: 11px; background: #ddd; padding: 10px; border-radius: 8px; overflow-x: auto; max-height: 250px; overflow-y: auto;">${JSON.stringify(data, null, 2)}</pre>
+                    <p class='error'>❌ Nie udało się wyodrębnić linku.</p>
+                    <pre style="text-align: left; font-size: 11px; background: #ddd; padding: 10px; border-radius: 8px; overflow-x: auto; max-height: 200px;">${JSON.stringify(data, null, 2)}</pre>
                 `;
             }
         } catch (error) {
             console.error("Fetch Error:", error);
-            resultDiv.innerHTML = "<p class='error'>❌ Server Error. Please try again later.</p>";
+            resultDiv.innerHTML = "<p class='error'>❌ Błąd serwera. Spróbuj ponownie później.</p>";
         } finally {
             fetchBtn.disabled = false;
         }

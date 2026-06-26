@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Instagram Video Downloader</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 450px;
+        }
+        h2 { 
+            background: -webkit-linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 25px;
+            font-size: 28px;
+        }
+        input {
+            width: 100%;
+            padding: 14px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+        input:focus {
+            outline: none;
+            border-color: #e1306c;
+            box-shadow: 0 0 5px rgba(225, 48, 108, 0.3);
+        }
+        button {
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 16px;
+            width: 100%;
+            transition: 0.3s;
+        }
+        button:hover { 
+            opacity: 0.85; 
+            transform: translateY(-2px);
+        }
+        #result { 
+            margin-top: 25px; 
+            word-wrap: break-word;
+        }
+        .download-btn {
+            display: inline-block;
+            margin-top: 15px;
+            padding: 12px 25px;
+            background-color: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(76, 175, 80, 0.3);
+            transition: 0.3s;
+        }
+        .download-btn:hover {
+            background-color: #45a049;
+        }
+        .error { color: #dc3545; font-weight: 500; }
+        .loader { color: #555; font-style: italic; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>IG Downloader</h2>
+    <input type="text" id="ig-url" placeholder="Paste Instagram Link Here...">
+    <button id="fetchBtn" onclick="downloadMedia()">Download</button>
+    <div id="result"></div>
+</div>
+
+<script>
+    async function downloadMedia() {
+        const urlInput = document.getElementById('ig-url').value.trim();
+        const resultDiv = document.getElementById('result');
+        const fetchBtn = document.getElementById('fetchBtn');
+
+        if(!urlInput.includes("instagram.com")) {
+            resultDiv.innerHTML = "<p class='error'>❌ Please enter a valid Instagram link!</p>";
+            return;
+        }
+
+        resultDiv.innerHTML = "<p class='loader'>⏳ Fetching video, please wait...</p>";
+        fetchBtn.disabled = true;
+
+        try {
+            // Backend API call
+            const response = await fetch('/api/download', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ url: urlInput })
+            });
+            
+            const data = await response.json();
+            console.log("Backend Response:", data);
+
+            let downloadLink = null;
+
+            // Alag-alag API response format check karna
+            if (data && data.url) {
+                downloadLink = data.url;
+            } else if (data && data.data && data.data[0] && data.data[0].url) {
+                downloadLink = data.data[0].url; 
+            } else if (data && data.video_url) {
+                downloadLink = data.video_url;
+            }
+
+            if(downloadLink) {
+                resultDiv.innerHTML = `
+                    <p style="color: #4CAF50; font-weight: bold;">✅ Video Ready!</p> 
+                    <a href="${downloadLink}" target="_blank" class="download-btn">⬇️ Download File</a>
+                `;
+            } else {
+                resultDiv.innerHTML = `
+                    <p class='error'>❌ Could not find the download link.</p>
+                    <p style="font-size: 13px; color: #777;">(Account private ho sakta hai ya link galat hai)</p>
+                `;
+            }
+        } catch (error) {
+            console.error("Fetch Error:", error);
+            resultDiv.innerHTML = "<p class='error'>❌ Server Error. Please try again later.</p>";
+        } finally {
+            fetchBtn.disabled = false;
+        }
+    }
+</script>
+</body>
+</html>

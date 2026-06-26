@@ -5,20 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <link rel="manifest" href="/manifest.json">
 <meta name="theme-color" content="#dd2a7b">
-<meta name="description" content="ReelSave Pro — Download Instagram Reels, Photos, Stories & Carousels in HD quality. Free, fast, no login required.">
-<meta name="keywords" content="instagram downloader, reels download, instagram video download, IG saver, reel saver">
-<meta property="og:title" content="ReelSave Pro — Instagram Downloader">
-<meta property="og:description" content="Save Instagram Reels, Photos & Carousels in HD instantly.">
-<meta property="og:type" content="website">
-<title>ReelSave Pro — Instagram Reels, Photos & Stories Downloader</title>
+<meta name="description" content="ReelSave Pro — Download Instagram Reels, Photos & Carousels.">
+<title>ReelSave Pro</title>
 
 <link rel="icon" type="image/png" href="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/120px-Instagram_icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
 <style>
-/* ════════════ GLOBAL RESET ════════════ */
+/* ════════════ GLOBAL RESET & VARS ════════════ */
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
 
 :root{
@@ -26,32 +20,23 @@
   --bg-2:#0d0d12;
   --card:#15151c;
   --card-2:#1c1c25;
-  --card-3:#242430;
   --border:rgba(255,255,255,0.06);
   --border-strong:rgba(255,255,255,0.12);
   --text:#f5f5f7;
   --text-2:#c5c5cf;
   --muted:#7a7a85;
   --muted-2:#4a4a55;
-  --ig-yellow:#feda75;
-  --ig-orange:#fa7e1e;
   --ig-pink:#d62976;
-  --ig-purple:#962fbf;
-  --ig-blue:#4f5bd5;
   --ig-gradient:linear-gradient(135deg,#feda75 0%,#fa7e1e 25%,#d62976 50%,#962fbf 75%,#4f5bd5 100%);
-  --ig-gradient-soft:linear-gradient(135deg,rgba(254,218,117,0.08),rgba(214,41,118,0.08),rgba(79,91,213,0.08));
   --green:#22c55e;
   --green-dark:#16a34a;
   --red:#ef4444;
   --blue:#3b82f6;
-  --radius:18px;
-  --radius-sm:12px;
   --font:'Plus Jakarta Sans',system-ui,-apple-system,sans-serif;
   --shadow-lg:0 20px 60px -10px rgba(214,41,118,0.25);
   --shadow-card:0 8px 32px -8px rgba(0,0,0,0.5);
 }
 
-html{scroll-behavior:smooth;}
 body{
   background:var(--bg);
   color:var(--text);
@@ -61,42 +46,10 @@ body{
   flex-direction:column;
   align-items:center;
   padding:20px 16px 60px;
-  position:relative;
-  overflow-x:hidden;
   -webkit-font-smoothing:antialiased;
 }
 
-/* Animated gradient background blobs */
-body::before,body::after{
-  content:'';
-  position:fixed;
-  width:400px;height:400px;
-  border-radius:50%;
-  filter:blur(120px);
-  opacity:0.15;
-  z-index:-1;
-  pointer-events:none;
-}
-body::before{
-  background:var(--ig-pink);
-  top:-100px;left:-100px;
-  animation:float1 14s ease-in-out infinite;
-}
-body::after{
-  background:var(--ig-blue);
-  bottom:-100px;right:-100px;
-  animation:float2 18s ease-in-out infinite;
-}
-@keyframes float1{
-  0%,100%{transform:translate(0,0) scale(1)}
-  50%{transform:translate(80px,60px) scale(1.15)}
-}
-@keyframes float2{
-  0%,100%{transform:translate(0,0) scale(1)}
-  50%{transform:translate(-80px,-60px) scale(1.2)}
-}
-
-/* ════════════ NAV ════════════ */
+/* ════════════ NAV & HERO ════════════ */
 .nav{
   width:100%;max-width:520px;
   display:flex;justify-content:space-between;align-items:center;
@@ -114,30 +67,12 @@ body::after{
   border-radius:10px;
   display:flex;align-items:center;justify-content:center;
   font-size:18px;
-  box-shadow:0 4px 14px rgba(214,41,118,0.4);
-  position:relative;
-}
-.logo-icon::before{
-  content:'';position:absolute;inset:0;
-  border-radius:10px;
-  background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent);
 }
 .logo-text{
   background:var(--ig-gradient);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;
 }
-.logo-pro{
-  font-size:9px;font-weight:700;
-  background:var(--ig-gradient);
-  color:#fff;
-  padding:2px 6px;
-  border-radius:5px;
-  letter-spacing:0.5px;
-  margin-left:-4px;
-  align-self:center;
-}
-
 .stats-pill{
   font-size:12px;color:var(--text-2);
   background:var(--card);
@@ -145,59 +80,24 @@ body::after{
   padding:7px 14px;border-radius:999px;
   display:flex;align-items:center;gap:6px;
   font-weight:500;
-  backdrop-filter:blur(10px);
-}
-.stats-pill .pulse{
-  width:6px;height:6px;
-  background:var(--green);
-  border-radius:50%;
-  box-shadow:0 0 0 0 var(--green);
-  animation:pulse 2s infinite;
-}
-@keyframes pulse{
-  0%{box-shadow:0 0 0 0 rgba(34,197,94,0.7)}
-  70%{box-shadow:0 0 0 8px rgba(34,197,94,0)}
-  100%{box-shadow:0 0 0 0 rgba(34,197,94,0)}
 }
 .stats-pill span{color:var(--text);font-weight:700;}
 
-/* ════════════ HERO ════════════ */
 .hero{
   width:100%;max-width:520px;
   text-align:center;
   margin-bottom:28px;
-  padding:0 8px;
-}
-.hero-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:11px;font-weight:600;
-  padding:6px 12px;
-  border-radius:999px;
-  background:rgba(214,41,118,0.1);
-  border:1px solid rgba(214,41,118,0.25);
-  color:#f06ba3;
-  margin-bottom:16px;
-  letter-spacing:0.3px;
 }
 .hero h1{
-  font-size:clamp(28px,7vw,40px);
+  font-size:clamp(26px,7vw,36px);
   font-weight:800;
-  line-height:1.15;
-  letter-spacing:-0.03em;
-  margin-bottom:12px;
+  line-height:1.2;
+  margin-bottom:8px;
 }
 .hero h1 .accent{
   background:var(--ig-gradient);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
   background-clip:text;
-  position:relative;
-  display:inline-block;
-}
-.hero p{
-  font-size:15px;color:var(--text-2);
-  line-height:1.6;
-  max-width:380px;
-  margin:0 auto;
 }
 
 /* ════════════ MAIN CARD ════════════ */
@@ -209,16 +109,7 @@ body::after{
   padding:24px;
   margin-bottom:18px;
   box-shadow:var(--shadow-card);
-  position:relative;
-  overflow:hidden;
 }
-.main-card::before{
-  content:'';position:absolute;
-  top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(214,41,118,0.5),transparent);
-}
-
-/* Input */
 .input-wrap{
   position:relative;
   margin-bottom:14px;
@@ -237,11 +128,7 @@ body::after{
   border-radius:12.5px;
   padding:0 8px 0 16px;
 }
-.input-icon{
-  color:var(--muted);
-  font-size:16px;
-  flex-shrink:0;
-}
+.input-icon{color:var(--muted);font-size:16px;}
 .input-inner input{
   flex:1;min-width:0;
   background:transparent;
@@ -251,579 +138,166 @@ body::after{
   font-size:14px;font-weight:500;
   padding:16px 0;
 }
-.input-inner input::placeholder{color:var(--muted-2);font-weight:400;}
+.input-inner input::placeholder{color:var(--muted-2);}
 .paste-btn,.clear-btn-x{
   background:none;border:none;cursor:pointer;
   color:var(--muted);font-size:16px;
-  padding:8px;
-  border-radius:8px;
+  padding:8px;border-radius:8px;
   transition:all 0.2s;
-  flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
 }
 .paste-btn:hover{color:var(--ig-pink);background:rgba(214,41,118,0.1);}
 .clear-btn-x{display:none;}
 .clear-btn-x.show{display:flex;}
 .clear-btn-x:hover{color:var(--red);background:rgba(239,68,68,0.1);}
 
-/* Type badge */
 .type-badge{
   display:inline-flex;align-items:center;gap:6px;
   font-size:11px;font-weight:700;
   padding:5px 12px;border-radius:999px;
-  margin-bottom:14px;
-  letter-spacing:0.3px;
-  text-transform:uppercase;
-  animation:badgeIn 0.3s ease;
+  margin-bottom:14px;text-transform:uppercase;
 }
-@keyframes badgeIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
 .type-badge.reel{background:rgba(229,29,80,0.12);color:#ff6b8a;border:1px solid rgba(229,29,80,0.3);}
 .type-badge.photo{background:rgba(250,126,30,0.12);color:#ffa867;border:1px solid rgba(250,126,30,0.3);}
 .type-badge.carousel{background:rgba(150,47,191,0.15);color:#c98ce8;border:1px solid rgba(150,47,191,0.3);}
 .type-badge.story{background:rgba(79,91,213,0.15);color:#8890e8;border:1px solid rgba(79,91,213,0.3);}
 .type-badge.hidden{display:none;}
 
-/* Fetch Button */
 .btn-fetch{
-  width:100%;
-  padding:17px;
-  border:none;
-  border-radius:14px;
-  font-family:var(--font);
-  font-size:15px;
-  font-weight:700;
-  cursor:pointer;
-  position:relative;
-  overflow:hidden;
-  background:var(--ig-gradient);
-  color:#fff;
+  width:100%;padding:17px;
+  border:none;border-radius:14px;
+  font-family:var(--font);font-size:15px;font-weight:700;
+  cursor:pointer;position:relative;overflow:hidden;
+  background:var(--ig-gradient);color:#fff;
   transition:all 0.25s;
-  letter-spacing:0.3px;
-  box-shadow:0 8px 24px -6px rgba(214,41,118,0.5);
   display:flex;align-items:center;justify-content:center;gap:8px;
 }
-.btn-fetch:hover:not(:disabled){
-  transform:translateY(-2px);
-  box-shadow:0 12px 32px -6px rgba(214,41,118,0.6);
-}
-.btn-fetch:active:not(:disabled){transform:translateY(0) scale(0.99);}
+.btn-fetch:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 12px 32px -6px rgba(214,41,118,0.6);}
 .btn-fetch:disabled{opacity:0.6;cursor:not-allowed;}
-
-.btn-fetch.loading::after{
-  content:'';
-  position:absolute;inset:0;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,0.25),transparent);
-  animation:shimmer 1.2s infinite;
-}
-@keyframes shimmer{0%{transform:translateX(-100%)}100%{transform:translateX(100%)}}
-
 .spinner{
   width:16px;height:16px;
   border:2px solid rgba(255,255,255,0.3);
-  border-top-color:#fff;
-  border-radius:50%;
+  border-top-color:#fff;border-radius:50%;
   animation:spin 0.7s linear infinite;
 }
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ════════════ HOW IT WORKS ════════════ */
-.how-it-works{
-  width:100%;max-width:520px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:20px;
-  padding:20px;
-  margin-bottom:18px;
-}
-.how-title{
-  font-size:13px;font-weight:700;
-  color:var(--text);
-  margin-bottom:14px;
-  display:flex;align-items:center;gap:8px;
-  letter-spacing:0.3px;
-}
-.how-title::before{
-  content:'';width:3px;height:14px;
-  background:var(--ig-gradient);
-  border-radius:2px;
-}
-.steps{display:flex;gap:8px;}
-.step{
-  flex:1;
-  display:flex;flex-direction:column;align-items:center;
-  text-align:center;
-  position:relative;
-}
-.step-num{
-  width:30px;height:30px;
-  border-radius:50%;
-  background:var(--card-2);
-  border:1.5px solid var(--border-strong);
-  display:flex;align-items:center;justify-content:center;
-  font-size:13px;font-weight:700;
-  color:var(--text-2);
-  margin-bottom:8px;
-  position:relative;
-  z-index:1;
-}
-.step:not(:last-child)::after{
-  content:'';
-  position:absolute;top:15px;left:65%;right:-35%;
-  height:1.5px;
-  background:linear-gradient(90deg,var(--border-strong),transparent);
-  z-index:0;
-}
-.step-text{
-  font-size:11px;color:var(--text-2);
-  font-weight:500;line-height:1.4;
-}
-
 /* ════════════ PREVIEW CARD ════════════ */
 .preview-card{
   width:100%;max-width:520px;
-  background:linear-gradient(180deg,var(--card),var(--bg-2));
+  background:var(--card);
   border:1px solid var(--border);
-  border-radius:24px;
-  overflow:hidden;
-  margin-bottom:18px;
-  display:none;
-  animation:slideUp 0.4s cubic-bezier(0.16,1,0.3,1);
-  box-shadow:var(--shadow-lg);
+  border-radius:24px;overflow:hidden;
+  margin-bottom:18px;display:none;
 }
-@keyframes slideUp{
-  from{opacity:0;transform:translateY(20px) scale(0.98)}
-  to{opacity:1;transform:translateY(0) scale(1)}
-}
-
-.preview-thumb{
-  position:relative;width:100%;
-  background:#0a0a0e;
-  aspect-ratio:16/10;
-  overflow:hidden;
-}
-.preview-thumb img{
-  width:100%;height:100%;
-  object-fit:cover;display:block;
-}
-.thumb-overlay{
-  position:absolute;inset:0;
-  background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,rgba(0,0,0,0.2) 40%,transparent 60%);
-}
-.thumb-meta{
-  position:absolute;bottom:14px;left:16px;right:16px;
-  display:flex;justify-content:space-between;align-items:end;
-  gap:10px;
-}
+.preview-thumb{position:relative;width:100%;background:#0a0a0e;aspect-ratio:16/10;overflow:hidden;}
+.preview-thumb img{width:100%;height:100%;object-fit:cover;display:block;}
+.thumb-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,0.85) 0%,transparent 60%);}
+.thumb-meta{position:absolute;bottom:14px;left:16px;right:16px;display:flex;gap:10px;}
 .thumb-type-tag{
-  font-size:11px;font-weight:700;
-  background:rgba(0,0,0,0.6);
-  backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,0.15);
-  color:#fff;
-  padding:5px 10px;border-radius:8px;
-  display:flex;align-items:center;gap:5px;
+  font-size:11px;font-weight:700;background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.15);
+  color:#fff;padding:5px 10px;border-radius:8px;
 }
-.play-indicator{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  width:62px;height:62px;
-  background:rgba(255,255,255,0.18);
-  backdrop-filter:blur(12px);
-  border:1.5px solid rgba(255,255,255,0.3);
-  border-radius:50%;
-  display:flex;align-items:center;justify-content:center;
-  font-size:22px;
-  color:#fff;
-  padding-left:4px;
-  transition:transform 0.3s;
-}
-.preview-thumb:hover .play-indicator{transform:translate(-50%,-50%) scale(1.1);}
-
 .preview-info{padding:20px;}
-.preview-title{
-  font-size:14px;color:var(--text);font-weight:500;
-  line-height:1.5;
-  display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;
-  margin-bottom:16px;
-}
+.preview-title{font-size:14px;font-weight:500;margin-bottom:16px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 
-/* Quality selector */
-.quality-row{
-  display:flex;gap:8px;
-  margin-bottom:16px;
-  flex-wrap:wrap;
-}
+.quality-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap;}
 .quality-btn{
-  flex:1;min-width:90px;
-  padding:11px 8px;
-  border-radius:11px;
-  border:1.5px solid var(--border-strong);
-  background:var(--card-2);
-  color:var(--text-2);
-  font-family:var(--font);
-  font-size:13px;font-weight:700;
-  cursor:pointer;
-  transition:all 0.2s;
-  text-align:center;
+  flex:1;min-width:90px;padding:11px 8px;
+  border-radius:11px;border:1.5px solid var(--border-strong);
+  background:var(--card-2);color:var(--text-2);
+  font-family:var(--font);font-size:13px;font-weight:700;
+  cursor:pointer;transition:all 0.2s;
   display:flex;flex-direction:column;align-items:center;gap:2px;
-}
-.quality-btn:hover:not(:disabled){
-  border-color:var(--ig-pink);
-  color:var(--text);
-  transform:translateY(-1px);
 }
 .quality-btn.selected{
   border-color:var(--ig-pink);
   background:linear-gradient(135deg,rgba(214,41,118,0.15),rgba(150,47,191,0.1));
   color:#fff;
-  box-shadow:0 4px 12px -4px rgba(214,41,118,0.4);
 }
 .quality-btn:disabled{opacity:0.35;cursor:not-allowed;}
-.quality-label{
-  display:block;font-size:10px;font-weight:500;
-  color:inherit;opacity:0.65;
-  letter-spacing:0.2px;
-}
+.quality-label{font-size:10px;font-weight:500;opacity:0.65;}
 
-/* Download row */
 .dl-row{display:flex;gap:10px;}
 .btn-dl{
-  flex:1;
-  padding:14px 12px;
-  border-radius:12px;
-  border:none;
-  font-family:var(--font);
-  font-size:13.5px;font-weight:700;
-  cursor:pointer;
-  display:flex;align-items:center;justify-content:center;gap:7px;
-  text-decoration:none;
-  transition:all 0.2s;
-  letter-spacing:0.2px;
+  flex:1;padding:14px 12px;border-radius:12px;
+  border:none;font-family:var(--font);font-size:13.5px;font-weight:700;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;
+  text-decoration:none;transition:all 0.2s;
 }
-.btn-dl.primary{
-  background:linear-gradient(135deg,var(--green),var(--green-dark));
-  color:#fff;
-  box-shadow:0 6px 18px -4px rgba(34,197,94,0.45);
-}
-.btn-dl.primary:hover{
-  transform:translateY(-2px);
-  box-shadow:0 10px 24px -4px rgba(34,197,94,0.55);
-}
-.btn-dl.primary:active{transform:translateY(0) scale(0.98);}
-.btn-dl.secondary{
-  background:var(--card-2);
-  color:var(--text-2);
-  border:1.5px solid var(--border-strong);
-  flex:0 0 auto;
-  padding:14px 16px;
-}
-.btn-dl.secondary:hover{color:var(--text);border-color:var(--muted);}
-
-/* ════════════ FEATURES STRIP ════════════ */
-.features{
-  width:100%;max-width:520px;
-  display:grid;grid-template-columns:repeat(4,1fr);
-  gap:10px;
-  margin-bottom:18px;
-}
-.feat{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:16px 10px;
-  text-align:center;
-  transition:all 0.25s;
-  cursor:default;
-}
-.feat:hover{
-  transform:translateY(-3px);
-  border-color:var(--border-strong);
-  background:var(--card-2);
-}
-.feat-icon{
-  font-size:22px;margin-bottom:8px;
-  filter:drop-shadow(0 2px 6px rgba(214,41,118,0.3));
-}
-.feat-title{font-size:12px;font-weight:700;color:var(--text);margin-bottom:3px;}
-.feat-desc{font-size:10.5px;color:var(--muted);line-height:1.4;}
-
-/* ════════════ SUPPORTED ════════════ */
-.supported-card{
-  width:100%;max-width:520px;
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:18px 20px;
-  margin-bottom:18px;
-}
-.supported-title{
-  font-size:12px;font-weight:700;
-  color:var(--muted);
-  text-transform:uppercase;
-  letter-spacing:0.8px;
-  margin-bottom:12px;
-  text-align:center;
-}
-.supported-grid{
-  display:flex;justify-content:center;align-items:center;
-  gap:18px;flex-wrap:wrap;
-}
-.supported-item{
-  display:flex;flex-direction:column;align-items:center;gap:6px;
-}
-.supported-emoji{
-  width:42px;height:42px;
-  border-radius:12px;
-  background:var(--card-2);
-  border:1px solid var(--border);
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;
-}
-.supported-label{font-size:11px;color:var(--text-2);font-weight:600;}
+.btn-dl.primary{background:linear-gradient(135deg,var(--green),var(--green-dark));color:#fff;}
+.btn-dl.secondary{background:var(--card-2);color:var(--text-2);border:1.5px solid var(--border-strong);flex:0 0 auto;padding:14px 16px;}
 
 /* ════════════ HISTORY ════════════ */
-.history-section{
-  width:100%;max-width:520px;
-  display:none;
-  margin-bottom:18px;
-}
-.section-header{
-  display:flex;justify-content:space-between;align-items:center;
-  margin-bottom:14px;
-  padding:0 4px;
-}
-.section-title{
-  font-size:15px;font-weight:700;color:var(--text);
-  display:flex;align-items:center;gap:8px;
-}
-.section-title::before{
-  content:'';width:3px;height:14px;
-  background:var(--ig-gradient);
-  border-radius:2px;
-}
+.history-section{width:100%;max-width:520px;display:none;margin-bottom:18px;}
+.section-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;padding:0 4px;}
+.section-title{font-size:15px;font-weight:700;display:flex;align-items:center;gap:8px;}
+.section-title::before{content:'';width:3px;height:14px;background:var(--ig-gradient);border-radius:2px;}
 .clear-btn{
-  font-size:12px;color:var(--muted);
-  background:var(--card);
-  border:1px solid var(--border);
-  cursor:pointer;
-  font-family:var(--font);
-  padding:6px 12px;
-  border-radius:8px;
-  transition:all 0.2s;
-  font-weight:600;
+  font-size:12px;color:var(--muted);background:var(--card);
+  border:1px solid var(--border);cursor:pointer;
+  padding:6px 12px;border-radius:8px;font-weight:600;
 }
-.clear-btn:hover{color:var(--red);border-color:rgba(239,68,68,0.4);background:rgba(239,68,68,0.05);}
-
 .history-item{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:12px 14px;
-  margin-bottom:10px;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:14px;padding:12px 14px;margin-bottom:10px;
   display:flex;align-items:center;gap:12px;
-  animation:slideUp 0.3s ease;
-  transition:all 0.2s;
 }
-.history-item:hover{border-color:var(--border-strong);background:var(--card-2);}
-.hist-thumb{
-  width:52px;height:52px;
-  border-radius:11px;
-  object-fit:cover;
-  background:var(--card-2);
-  flex-shrink:0;
-}
+.hist-thumb{width:52px;height:52px;border-radius:11px;object-fit:cover;background:var(--card-2);flex-shrink:0;}
 .hist-thumb-placeholder{
-  width:52px;height:52px;
-  border-radius:11px;
-  background:var(--ig-gradient);
-  flex-shrink:0;
-  display:flex;align-items:center;justify-content:center;
-  font-size:20px;
-  position:relative;
-}
-.hist-thumb-placeholder::before{
-  content:'';position:absolute;inset:0;
-  border-radius:11px;
-  background:linear-gradient(135deg,rgba(255,255,255,0.2),transparent);
+  width:52px;height:52px;border-radius:11px;background:var(--ig-gradient);
+  flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:20px;
 }
 .hist-info{flex:1;min-width:0;}
-.hist-title{
-  font-size:13px;font-weight:600;color:var(--text);
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-  margin-bottom:3px;
-}
-.hist-time{font-size:11px;color:var(--muted);display:flex;align-items:center;gap:4px;}
+.hist-title{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+.hist-time{font-size:11px;color:var(--muted);}
 .hist-link{
-  font-size:12px;font-weight:700;
-  color:var(--ig-pink);text-decoration:none;
-  white-space:nowrap;flex-shrink:0;
-  padding:6px 10px;
-  border-radius:8px;
+  font-size:12px;font-weight:700;color:var(--ig-pink);
+  text-decoration:none;padding:6px 10px;border-radius:8px;
   background:rgba(214,41,118,0.08);
-  transition:all 0.2s;
-}
-.hist-link:hover{background:rgba(214,41,118,0.15);}
-
-/* ════════════ FAQ ════════════ */
-.faq-section{
-  width:100%;max-width:520px;
-  margin-bottom:18px;
-}
-.faq-item{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  margin-bottom:8px;
-  overflow:hidden;
-  transition:all 0.2s;
-}
-.faq-item:hover{border-color:var(--border-strong);}
-.faq-question{
-  width:100%;
-  padding:14px 16px;
-  background:none;border:none;
-  color:var(--text);
-  font-family:var(--font);
-  font-size:13.5px;font-weight:600;
-  cursor:pointer;
-  display:flex;justify-content:space-between;align-items:center;
-  text-align:left;
-  gap:12px;
-}
-.faq-icon{
-  flex-shrink:0;
-  color:var(--muted);
-  transition:transform 0.3s;
-  font-size:14px;
-}
-.faq-item.open .faq-icon{transform:rotate(180deg);color:var(--ig-pink);}
-.faq-answer{
-  max-height:0;
-  overflow:hidden;
-  transition:max-height 0.3s ease;
-}
-.faq-item.open .faq-answer{max-height:200px;}
-.faq-answer-inner{
-  padding:0 16px 14px;
-  font-size:12.5px;color:var(--text-2);
-  line-height:1.6;
 }
 
-/* ════════════ TOAST ════════════ */
+/* ════════════ TOAST & STATUS ════════════ */
 .toast{
-  position:fixed;bottom:30px;left:50%;
-  transform:translateX(-50%) translateY(100px);
-  background:linear-gradient(180deg,var(--card-2),var(--card));
-  border:1px solid var(--border-strong);
-  border-radius:14px;
-  padding:13px 20px;
-  font-size:13px;font-weight:600;
-  color:var(--text);
-  display:flex;align-items:center;gap:10px;
-  transition:all 0.35s cubic-bezier(0.16,1,0.3,1);
-  z-index:9999;
-  white-space:nowrap;
-  max-width:90vw;
-  opacity:0;
-  pointer-events:none;
-  box-shadow:0 12px 40px -8px rgba(0,0,0,0.6);
-  backdrop-filter:blur(20px);
+  position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--card-2);border:1px solid var(--border-strong);
+  border-radius:14px;padding:13px 20px;font-size:13px;font-weight:600;
+  display:flex;align-items:center;gap:10px;transition:all 0.35s;
+  z-index:9999;opacity:0;pointer-events:none;
 }
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
-.toast.success{border-color:rgba(34,197,94,0.3);}
 .toast.success .toast-icon{color:var(--green);}
-.toast.error{border-color:rgba(239,68,68,0.3);}
 .toast.error .toast-icon{color:var(--red);}
-.toast.info{border-color:rgba(59,130,246,0.3);}
 .toast.info .toast-icon{color:var(--blue);}
-.toast-icon{font-size:15px;}
-
-/* ════════════ STATUS ════════════ */
-.status-msg{
-  font-size:13px;
-  text-align:center;
-  margin-top:14px;
-  min-height:18px;
-  color:var(--muted);
-  font-weight:500;
-}
+.status-msg{font-size:13px;text-align:center;margin-top:14px;min-height:18px;color:var(--muted);font-weight:500;}
 
 /* ════════════ FOOTER ════════════ */
-.footer{
-  margin-top:30px;
-  text-align:center;
-  font-size:11.5px;
-  color:var(--muted-2);
-  line-height:1.8;
-  max-width:520px;
-}
-.footer-links{
-  display:flex;justify-content:center;gap:14px;
-  margin-bottom:8px;
-}
-.footer-links a{
-  color:var(--muted);text-decoration:none;
-  font-weight:600;
-  transition:color 0.2s;
-}
-.footer-links a:hover{color:var(--ig-pink);}
-.footer-divider{color:var(--muted-2);}
-
-/* ════════════ RESPONSIVE ════════════ */
-@media(max-width:420px){
-  .features{grid-template-columns:repeat(2,1fr);}
-  .supported-grid{gap:14px;}
-  .step-text{font-size:10px;}
-}
-@media(max-width:340px){
-  body{padding:16px 12px 50px;}
-  .main-card,.how-it-works{padding:18px 16px;}
-}
-
-/* Smooth scrolling for autofill */
-input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus{
-  -webkit-text-fill-color:var(--text);
-  -webkit-box-shadow:0 0 0 30px var(--card-2) inset;
-  transition:background-color 5000s ease-in-out 0s;
-}
+.footer{margin-top:20px;text-align:center;font-size:11.5px;color:var(--muted-2);max-width:520px;}
 </style>
 </head>
 <body>
 
-<!-- NAV -->
 <nav class="nav">
   <div class="logo">
-    <div class="logo-icon">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="2" y="2" width="20" height="20" rx="5"/>
-        <circle cx="12" cy="12" r="4"/>
-        <circle cx="17.5" cy="6.5" r="1" fill="white"/>
-      </svg>
-    </div>
-    <span class="logo-text">ReelSave</span>
-    <span class="logo-pro">PRO</span>
+    <div class="logo-icon">🎬</div>
+    <span class="logo-text">ReelSave Pro</span>
   </div>
   <div class="stats-pill">
-    <span class="pulse"></span>
     Saved: <span id="counter">0</span>
   </div>
 </nav>
 
-<!-- HERO -->
 <div class="hero">
-  <div class="hero-badge">⚡ Fastest IG Downloader · 100% Free</div>
-  <h1>Save <span class="accent">Instagram</span><br>content in seconds</h1>
-  <p>Download Reels, Photos, Stories & Carousels in original HD quality. No login. No watermark. No limits.</p>
+  <h1>Save <span class="accent">Instagram</span><br>content instantly</h1>
 </div>
 
-<!-- MAIN CARD -->
 <div class="main-card">
   <div class="input-wrap" id="inputWrap">
     <div class="input-inner">
       <span class="input-icon">🔗</span>
       <input type="url" id="ig-url" placeholder="Paste Instagram link here..." autocomplete="off" autocorrect="off" spellcheck="false" inputmode="url">
       <button class="clear-btn-x" id="clearBtnX" onclick="clearInput()" title="Clear">✕</button>
-      <button class="paste-btn" onclick="pasteFromClipboard()" title="Paste from clipboard">📋</button>
+      <button class="paste-btn" onclick="pasteFromClipboard()" title="Paste">📋</button>
     </div>
   </div>
 
@@ -831,42 +305,17 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
 
   <button class="btn-fetch" id="fetchBtn" onclick="downloadMedia()">
     <span id="btnIcon">⬇️</span>
-    <span id="btnText">Download Now</span>
+    <span id="btnText">Get Video</span>
   </button>
   <div class="status-msg" id="statusMsg"></div>
 </div>
 
-<!-- HOW IT WORKS -->
-<div class="how-it-works">
-  <div class="how-title">How it works</div>
-  <div class="steps">
-    <div class="step">
-      <div class="step-num">1</div>
-      <div class="step-text">Copy IG link</div>
-    </div>
-    <div class="step">
-      <div class="step-num">2</div>
-      <div class="step-text">Paste here</div>
-    </div>
-    <div class="step">
-      <div class="step-num">3</div>
-      <div class="step-text">Choose quality</div>
-    </div>
-    <div class="step">
-      <div class="step-num">4</div>
-      <div class="step-text">Download</div>
-    </div>
-  </div>
-</div>
-
-<!-- PREVIEW CARD -->
 <div class="preview-card" id="previewCard">
   <div class="preview-thumb" id="thumbWrap" style="display:none">
     <img id="thumbImg" src="" alt="Preview" onerror="this.style.display='none'">
     <div class="thumb-overlay"></div>
-    <div class="play-indicator">▶</div>
     <div class="thumb-meta">
-      <div class="thumb-type-tag" id="thumbTypeTag">🎬 Reel</div>
+      <div class="thumb-type-tag" id="thumbTypeTag">🎬 Media</div>
     </div>
   </div>
   <div class="preview-info">
@@ -874,184 +323,55 @@ input:-webkit-autofill,input:-webkit-autofill:hover,input:-webkit-autofill:focus
 
     <div class="quality-row" id="qualityRow">
       <button class="quality-btn selected" data-q="hd" onclick="selectQuality(this)">
-        HD 1080p
-        <span class="quality-label">Best quality</span>
+        HD 1080p <span class="quality-label">Best</span>
       </button>
       <button class="quality-btn" data-q="sd" onclick="selectQuality(this)">
-        SD 720p
-        <span class="quality-label">Smaller size</span>
+        SD 720p <span class="quality-label">Smaller</span>
       </button>
       <button class="quality-btn" data-q="audio" onclick="selectQuality(this)">
-        🎵 Audio
-        <span class="quality-label">MP3 only</span>
+        🎵 Audio <span class="quality-label">MP3</span>
       </button>
     </div>
 
     <div class="dl-row">
-      <a id="dlLink" href="#" download class="btn-dl primary" onclick="onDownloadClick()">
-        ⬇️ Download
-      </a>
-      <button class="btn-dl secondary" onclick="copyLink()" title="Copy link">
-        🔗
-      </button>
+      <a id="dlLink" href="#" target="_blank" rel="noopener" class="btn-dl primary" onclick="onDownloadClick()">⬇️ Download</a>
+      <button class="btn-dl secondary" onclick="copyLink()" title="Copy link">🔗</button>
     </div>
   </div>
 </div>
 
-<!-- SUPPORTED -->
-<div class="supported-card">
-  <div class="supported-title">Supports All Instagram Content</div>
-  <div class="supported-grid">
-    <div class="supported-item">
-      <div class="supported-emoji">🎬</div>
-      <div class="supported-label">Reels</div>
-    </div>
-    <div class="supported-item">
-      <div class="supported-emoji">📷</div>
-      <div class="supported-label">Photos</div>
-    </div>
-    <div class="supported-item">
-      <div class="supported-emoji">🖼️</div>
-      <div class="supported-label">Carousel</div>
-    </div>
-    <div class="supported-item">
-      <div class="supported-emoji">📖</div>
-      <div class="supported-label">Stories</div>
-    </div>
-    <div class="supported-item">
-      <div class="supported-emoji">📺</div>
-      <div class="supported-label">IGTV</div>
-    </div>
-  </div>
-</div>
-
-<!-- FEATURES -->
-<div class="features">
-  <div class="feat">
-    <div class="feat-icon">⚡</div>
-    <div class="feat-title">Lightning Fast</div>
-    <div class="feat-desc">Under 3 seconds</div>
-  </div>
-  <div class="feat">
-    <div class="feat-icon">🎬</div>
-    <div class="feat-title">HD Quality</div>
-    <div class="feat-desc">Up to 1080p</div>
-  </div>
-  <div class="feat">
-    <div class="feat-icon">🔒</div>
-    <div class="feat-title">No Login</div>
-    <div class="feat-desc">100% private</div>
-  </div>
-  <div class="feat">
-    <div class="feat-icon">💯</div>
-    <div class="feat-title">Free Forever</div>
-    <div class="feat-desc">No hidden fees</div>
-  </div>
-</div>
-
-<!-- HISTORY -->
 <div class="history-section" id="historySection">
   <div class="section-header">
     <span class="section-title">Recent downloads</span>
-    <button class="clear-btn" onclick="clearHistory()">🗑️ Clear all</button>
+    <button class="clear-btn" onclick="clearHistory()">🗑️ Clear</button>
   </div>
   <div id="historyList"></div>
 </div>
 
-<!-- FAQ -->
-<div class="faq-section">
-  <div class="section-header">
-    <span class="section-title">Frequently asked</span>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question" onclick="toggleFaq(this)">
-      Is ReelSave Pro really free?
-      <span class="faq-icon">⌄</span>
-    </button>
-    <div class="faq-answer">
-      <div class="faq-answer-inner">Yes, 100% free. No subscription, no hidden charges, no daily limits. Download as many reels and photos as you want.</div>
-    </div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question" onclick="toggleFaq(this)">
-      Do I need to log in to my Instagram?
-      <span class="faq-icon">⌄</span>
-    </button>
-    <div class="faq-answer">
-      <div class="faq-answer-inner">No login required. We never ask for your credentials. Just paste the public link and download.</div>
-    </div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question" onclick="toggleFaq(this)">
-      Is it safe and legal?
-      <span class="faq-icon">⌄</span>
-    </button>
-    <div class="faq-answer">
-      <div class="faq-answer-inner">ReelSave is safe to use. For legality, please only download content for personal use and always respect the original creator's copyright.</div>
-    </div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question" onclick="toggleFaq(this)">
-      Will creators know I downloaded their video?
-      <span class="faq-icon">⌄</span>
-    </button>
-    <div class="faq-answer">
-      <div class="faq-answer-inner">No. Downloads are completely anonymous. Instagram does not notify creators when someone downloads their public content.</div>
-    </div>
-  </div>
-</div>
-
-<!-- FOOTER -->
 <div class="footer">
-  <div class="footer-links">
-    <a href="#">Privacy</a>
-    <span class="footer-divider">·</span>
-    <a href="#">Terms</a>
-    <span class="footer-divider">·</span>
-    <a href="#">Contact</a>
-    <span class="footer-divider">·</span>
-    <a href="#">DMCA</a>
-  </div>
-  © 2025 ReelSave Pro · For personal use only<br>
-  Not affiliated with Instagram™ or Meta Platforms, Inc.<br>
-  <em>Please respect creators — don't repost without credit.</em>
+  © ReelSave Pro · For personal use only<br>
+  Not affiliated with Instagram™
 </div>
 
-<!-- TOAST -->
 <div class="toast" id="toast">
   <span class="toast-icon" id="toastIcon"></span>
   <span id="toastMsg"></span>
 </div>
 
 <script>
-/* ════════════ STATE ════════════ */
 let downloadLinks = { hd: null, sd: null, audio: null };
 let selectedQuality = 'hd';
 let toastTimer = null;
 let currentMediaType = 'video';
 
-/* ════════════ COUNTER ════════════ */
 function getCounter(){return parseInt(localStorage.getItem('rs_count')||'0');}
 function incCounter(){
   const n=getCounter()+1;
   localStorage.setItem('rs_count',n);
-  animateCounter(n);
-}
-function animateCounter(target){
-  const el=document.getElementById('counter');
-  const start=parseInt(el.textContent)||0;
-  const duration=400;
-  const startTime=performance.now();
-  function tick(now){
-    const p=Math.min((now-startTime)/duration,1);
-    el.textContent=Math.floor(start+(target-start)*p);
-    if(p<1)requestAnimationFrame(tick);
-  }
-  requestAnimationFrame(tick);
+  document.getElementById('counter').textContent=n;
 }
 document.getElementById('counter').textContent=getCounter();
 
-/* ════════════ INPUT HANDLING ════════════ */
 const urlInput=document.getElementById('ig-url');
 const inputWrap=document.getElementById('inputWrap');
 const clearBtnX=document.getElementById('clearBtnX');
@@ -1081,8 +401,7 @@ async function pasteFromClipboard(){
       showToast('info','📋','Link pasted!');
     }
   }catch(e){
-    showToast('error','❌','Please paste manually (Ctrl+V).');
-    urlInput.focus();
+    showToast('error','❌','Please paste manually.');
   }
 }
 
@@ -1090,28 +409,23 @@ function detectType(){
   const v=urlInput.value.trim();
   const badge=document.getElementById('typeBadge');
   if(v.includes('/reel/')||v.includes('/reels/')){
-    badge.className='type-badge reel';badge.innerHTML='🎬 Reel detected';
+    badge.className='type-badge reel';badge.innerHTML='🎬 Reel';
     currentMediaType='reel';
   } else if(v.includes('/stories/')){
-    badge.className='type-badge story';badge.innerHTML='📖 Story detected';
+    badge.className='type-badge story';badge.innerHTML='📖 Story';
     currentMediaType='story';
   } else if(v.includes('/p/')){
-    badge.className='type-badge carousel';badge.innerHTML='🖼️ Post / Carousel detected';
+    badge.className='type-badge carousel';badge.innerHTML='🖼️ Post';
     currentMediaType='post';
-  } else if(v.includes('/tv/')){
-    badge.className='type-badge photo';badge.innerHTML='📺 IGTV detected';
-    currentMediaType='igtv';
   } else if(v.includes('instagram.com')){
-    badge.className='type-badge photo';badge.innerHTML='📷 Instagram content';
+    badge.className='type-badge photo';badge.innerHTML='📷 Link detected';
     currentMediaType='photo';
   } else {
     badge.className='type-badge hidden';
     currentMediaType='video';
-    return;
   }
 }
 
-/* ════════════ QUALITY SELECTOR ════════════ */
 function selectQuality(btn){
   if(btn.disabled)return;
   document.querySelectorAll('.quality-btn').forEach(b=>b.classList.remove('selected'));
@@ -1126,7 +440,6 @@ function updateDownloadLink(){
   link.href=url;
 }
 
-/* ════════════ DOWNLOAD ════════════ */
 async function downloadMedia(){
   const url=urlInput.value.trim();
   const btn=document.getElementById('fetchBtn');
@@ -1135,22 +448,15 @@ async function downloadMedia(){
   const status=document.getElementById('statusMsg');
   const previewCard=document.getElementById('previewCard');
 
-  if(!url){
-    showToast('error','❌','Please paste an Instagram link first.');
-    urlInput.focus();
-    return;
-  }
-  if(!url.includes('instagram.com')){
-    showToast('error','❌','This doesn\'t look like an Instagram link.');
+  if(!url || !url.includes('instagram.com')){
+    showToast('error','❌','Please paste a valid Instagram link.');
     return;
   }
 
   btn.disabled=true;
-  btn.classList.add('loading');
   btnText.textContent='Fetching...';
   btnIcon.innerHTML='<span class="spinner"></span>';
-  status.style.color='var(--muted)';
-  status.textContent='🔍 Analyzing your link...';
+  status.textContent='🔍 Analyzing link...';
   previewCard.style.display='none';
 
   try{
@@ -1172,23 +478,17 @@ async function downloadMedia(){
     if(!downloadLinks.sd&&downloadLinks.hd)downloadLinks.sd=downloadLinks.hd;
     if(!downloadLinks.hd&&downloadLinks.sd)downloadLinks.hd=downloadLinks.sd;
 
-    if(!downloadLinks.hd)throw new Error('Could not extract download link.');
+    if(!downloadLinks.hd)throw new Error('Could not extract link.');
 
     const sdBtn=document.querySelector('[data-q="sd"]');
-    if(downloadLinks.hd===downloadLinks.sd){sdBtn.style.display='none';}
-    else{sdBtn.style.display='';}
+    sdBtn.style.display=(downloadLinks.hd===downloadLinks.sd)?'none':'';
 
     const thumb=data?.[0]?.pictureUrl||null;
     const title=data?.[0]?.meta?.title||'Instagram media';
     const imgEl=document.getElementById('thumbImg');
 
-    // Update thumb type tag
-    const tagEl=document.getElementById('thumbTypeTag');
-    const tagMap={
-      reel:'🎬 Reel',story:'📖 Story',post:'🖼️ Post',
-      igtv:'📺 IGTV',photo:'📷 Photo',video:'🎬 Video'
-    };
-    tagEl.textContent=tagMap[currentMediaType]||'🎬 Media';
+    const tagMap={reel:'🎬 Reel',story:'📖 Story',post:'🖼️ Post',photo:'📷 Photo',video:'🎬 Video'};
+    document.getElementById('thumbTypeTag').textContent=tagMap[currentMediaType]||'🎬 Media';
 
     if(thumb){
       imgEl.src=thumb;
@@ -1199,7 +499,6 @@ async function downloadMedia(){
     }
 
     document.getElementById('videoTitle').textContent=title;
-
     document.querySelector('[data-q="hd"]').click();
     updateDownloadLink();
 
@@ -1211,20 +510,16 @@ async function downloadMedia(){
     }
 
     previewCard.style.display='block';
-    setTimeout(()=>previewCard.scrollIntoView({behavior:'smooth',block:'nearest'}),100);
     status.textContent='';
     showToast('success','✅','Ready to download!');
-
     saveHistory(title,url,thumb);
 
   }catch(err){
-    status.style.color='var(--red)';
-    status.textContent='⚠️ Could not fetch. Please check the link.';
+    status.textContent='⚠️ Failed to fetch.';
     showToast('error','❌',err.message||'Something went wrong.');
   }finally{
     btn.disabled=false;
-    btn.classList.remove('loading');
-    btnText.textContent='Download Now';
+    btnText.textContent='Get Video';
     btnIcon.textContent='⬇️';
   }
 }
@@ -1237,23 +532,14 @@ function onDownloadClick(){
 
 function copyLink(){
   const url=document.getElementById('dlLink').href;
-  if(url.endsWith('#')){showToast('error','❌','No link to copy yet.');return;}
-  navigator.clipboard.writeText(url).then(()=>{
-    showToast('success','🔗','Link copied!');
-  }).catch(()=>showToast('error','❌','Could not copy link.'));
+  if(url.endsWith('#')){showToast('error','❌','No link yet.');return;}
+  navigator.clipboard.writeText(url).then(()=>{showToast('success','🔗','Link copied!');}).catch(()=>{});
 }
 
-/* ════════════ HISTORY ════════════ */
 function saveHistory(title,url,thumb){
   let h=JSON.parse(localStorage.getItem('rs_history')||'[]');
-  const exists=h.some(i=>i.url===url);
-  if(!exists){
-    h.unshift({
-      title:title.substring(0,60),
-      url,thumb:thumb||null,
-      time:Date.now(),
-      type:currentMediaType
-    });
+  if(!h.some(i=>i.url===url)){
+    h.unshift({title:title.substring(0,50),url,thumb,time:Date.now(),type:currentMediaType});
     if(h.length>10)h=h.slice(0,10);
     localStorage.setItem('rs_history',JSON.stringify(h));
   }
@@ -1263,83 +549,53 @@ function saveHistory(title,url,thumb){
 function renderHistory(){
   const h=JSON.parse(localStorage.getItem('rs_history')||'[]');
   const section=document.getElementById('historySection');
-  const list=document.getElementById('historyList');
   if(!h.length){section.style.display='none';return;}
   section.style.display='block';
-  list.innerHTML=h.map(item=>{
-    const ago=timeAgo(item.time);
-    const typeIcon={reel:'🎬',story:'📖',post:'🖼️',igtv:'📺',photo:'📷'}[item.type]||'🎬';
+  document.getElementById('historyList').innerHTML=h.map(item=>{
+    const typeIcon={reel:'🎬',story:'📖',post:'🖼️',photo:'📷'}[item.type]||'🎬';
     const thumbHtml=item.thumb
-      ?`<img class="hist-thumb" src="${item.thumb}" alt="" loading="lazy" onerror="this.outerHTML='<div class=&quot;hist-thumb-placeholder&quot;>${typeIcon}</div>'">`
+      ?`<img class="hist-thumb" src="${item.thumb}" loading="lazy" onerror="this.outerHTML='<div class=&quot;hist-thumb-placeholder&quot;>${typeIcon}</div>'">`
       :`<div class="hist-thumb-placeholder">${typeIcon}</div>`;
     return`<div class="history-item">
       ${thumbHtml}
       <div class="hist-info">
-        <div class="hist-title">${escHtml(item.title)}</div>
-        <div class="hist-time">🕒 ${ago}</div>
+        <div class="hist-title">${item.title.replace(/</g,'&lt;')}</div>
+        <div class="hist-time">🕒 Just now</div>
       </div>
-      <a href="${item.url}" target="_blank" rel="noopener" class="hist-link">Open ↗</a>
+      <a href="${item.url}" target="_blank" class="hist-link">Open</a>
     </div>`;
   }).join('');
 }
 
 function clearHistory(){
-  if(!confirm('Clear all download history?'))return;
   localStorage.removeItem('rs_history');
   renderHistory();
   showToast('info','🗑️','History cleared.');
 }
 
-function timeAgo(ts){
-  const s=Math.floor((Date.now()-ts)/1000);
-  if(s<60)return'Just now';
-  if(s<3600)return Math.floor(s/60)+' min ago';
-  if(s<86400)return Math.floor(s/3600)+' hr ago';
-  if(s<604800)return Math.floor(s/86400)+' days ago';
-  return new Date(ts).toLocaleDateString();
-}
-
-function escHtml(s){
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-/* ════════════ FAQ ════════════ */
-function toggleFaq(btn){
-  const item=btn.parentElement;
-  const wasOpen=item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
-  if(!wasOpen)item.classList.add('open');
-}
-
-/* ════════════ TOAST ════════════ */
 function showToast(type,icon,msg){
   clearTimeout(toastTimer);
   const toast=document.getElementById('toast');
-  const ti=document.getElementById('toastIcon');
-  const tm=document.getElementById('toastMsg');
-  toast.className='toast '+type;
-  ti.textContent=icon;
-  tm.textContent=msg;
-  toast.classList.add('show');
-  toastTimer=setTimeout(()=>toast.classList.remove('show'),2800);
+  document.getElementById('toastIcon').textContent=icon;
+  document.getElementById('toastMsg').textContent=msg;
+  toast.className='toast '+type+' show';
+  toastTimer=setTimeout(()=>toast.classList.remove('show'),2500);
 }
 
-/* ════════════ INIT ════════════ */
 window.addEventListener('load',()=>{
   renderHistory();
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('/sw.js').catch(()=>{});
-  }
-  // Auto-detect IG link in clipboard on first focus
+  if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(()=>{});
+  
+  // Smart auto-paste with length limit to avoid pasting HTML code
   urlInput.addEventListener('focus',async function autoCheck(){
     if(urlInput.value)return;
     try{
       const text=await navigator.clipboard.readText();
-      if(text&&text.includes('instagram.com')){
+      if(text && text.length < 500 && text.includes('instagram.com')){
         urlInput.value=text;
         detectType();
         clearBtnX.classList.add('show');
-        showToast('info','✨','Instagram link auto-pasted!');
+        showToast('info','✨','Auto-pasted!');
       }
     }catch(e){}
     urlInput.removeEventListener('focus',autoCheck);

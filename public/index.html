@@ -7,6 +7,7 @@
     <meta name="theme-color" content="#d62976">
     <title>Pro IG Downloader with Auth</title>
     
+    <!-- Supabase JS Library CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
     <style>
@@ -72,6 +73,7 @@
 </head>
 <body>
 
+<!-- 1. AUTH INTERFACE (LOGIN/SIGNUP) -->
 <div class="glass-container" id="auth-view">
     <h2>Welcome Back</h2>
     <p class="subtitle">Please Login to use IG Downloader</p>
@@ -85,6 +87,7 @@
     <div id="auth-msg"></div>
 </div>
 
+<!-- 2. MAIN DOWNLOADER INTERFACE -->
 <div class="glass-container" id="downloader-view">
     <h2>IG Downloader</h2>
     <div id="user-display" class="user-badge"></div>
@@ -105,7 +108,8 @@
 </div>
 
 <script>
-    let supabase = null;
+    // Variable naam change kiya hai taaki browser se clash na ho
+    let supabaseClient = null;
     let currentUserEmail = null;
 
     // Server se keys lekar Supabase Init karna
@@ -113,15 +117,18 @@
         try {
             const res = await fetch('/api/config');
             const config = await res.json();
-            supabase = supabase.createClient(config.supabaseUrl, config.supabaseKey);
+            
+            // Global supabase object se client create kar rahe hain
+            supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
             
             // Check active session
-            const { data: { session } } = await supabase.auth.getSession();
+            const { data: { session } } = await supabaseClient.auth.getSession();
             if (session) {
                 showDownloader(session.user.email);
             }
         } catch (err) {
             console.error("Supabase load error:", err);
+            document.getElementById('auth-msg').innerHTML = "Server se connect hone me error aaya.";
         }
     }
 
@@ -137,6 +144,7 @@
         currentUserEmail = null;
         document.getElementById('auth-view').style.display = 'block';
         document.getElementById('downloader-view').style.display = 'none';
+        document.getElementById('auth-msg').innerHTML = "";
     }
 
     // Auth Operations
@@ -145,9 +153,13 @@
         const password = document.getElementById('auth-password').value;
         const msg = document.getElementById('auth-msg');
 
+        if (!supabaseClient) {
+            msg.innerHTML = "System loading... please wait."; return;
+        }
+
         msg.innerHTML = "⏳ Logging in..."; msg.style.color = "#fff";
 
-        const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
         if (error) {
             msg.innerHTML = `❌ ${error.message}`; msg.style.color = "#ff4d4d";
         } else {
@@ -161,6 +173,10 @@
         const password = document.getElementById('auth-password').value;
         const msg = document.getElementById('auth-msg');
 
+        if (!supabaseClient) {
+            msg.innerHTML = "System loading... please wait."; return;
+        }
+
         if(password.length < 6) {
             msg.innerHTML = "❌ Password kam se kam 6 characters ka hona chahiye!";
             msg.style.color = "#ff4d4d"; return;
@@ -168,7 +184,7 @@
 
         msg.innerHTML = "⏳ Creating Account..."; msg.style.color = "#fff";
 
-        const { data, error } = await supabase.auth.signUp({ email, password });
+        const { data, error } = await supabaseClient.auth.signUp({ email, password });
         if (error) {
             msg.innerHTML = `❌ ${error.message}`; msg.style.color = "#ff4d4d";
         } else {
@@ -178,7 +194,9 @@
     }
 
     async function handleLogout() {
-        await supabase.auth.signOut();
+        if (supabaseClient) {
+            await supabaseClient.auth.signOut();
+        }
         showAuth();
     }
 
@@ -226,7 +244,7 @@
                 document.getElementById('video-title').innerText = title.substring(0, 50) + "...";
                 previewBox.style.display = "block";
             } else {
-                throw new Error("Link format changed by API.");
+                throw new Error("Link format badal gaya hai, console check karein.");
             }
         } catch (error) {
             statusMsg.innerHTML = `❌ Error: ${error.message}`;

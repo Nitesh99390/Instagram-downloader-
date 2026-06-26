@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ig-downloader-v3';
+const CACHE_NAME = 'reelsave-v1';
 const urlsToCache = [
   '/',
   '/index.html',
@@ -6,9 +6,25 @@ const urlsToCache = [
 ];
 
 self.addEventListener('install', event => {
+  self.skipWaiting(); // Naye update ko turant activate karega
   event.waitUntil(
     caches.open(CACHE_NAME)
       .then(cache => cache.addAll(urlsToCache))
+  );
+});
+
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(cacheNames => {
+      return Promise.all(
+        cacheNames.map(cacheName => {
+          // Purana koi bhi cache hoga (jaise ig-downloader-v3), use delete kar dega
+          if (cacheName !== CACHE_NAME) {
+            return caches.delete(cacheName);
+          }
+        })
+      );
+    }).then(() => self.clients.claim())
   );
 });
 

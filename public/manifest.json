@@ -1,11 +1,11 @@
 {
-  "name": "IG Downloader Pro",
-  "short_name": "IG Saver",
-  "description": "Download Instagram Reels and Videos instantly.",
+  "name": "ReelSave Pro",
+  "short_name": "ReelSave",
+  "description": "Download Instagram Reels, Photos & Carousels in HD instantly.",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#121212",
-  "theme_color": "#d62976",
+  "background_color": "#0d0d0d",
+  "theme_color": "#e1306c",
   "icons": [
     {
       "src": "https://cdn-icons-png.flaticon.com/512/174/174855.png",

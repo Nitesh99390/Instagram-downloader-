@@ -430,7 +430,7 @@ body{
 
 <div class="preview-card" id="previewCard">
   <div class="preview-thumb" id="thumbWrap" style="display:none">
-    <img id="thumbImg" src="" alt="Video thumbnail">
+    <img id="thumbImg" src="" alt="" onerror="this.style.display='none'">
     <div class="thumb-overlay"></div>
     <div class="play-indicator">▶️</div>
   </div>
@@ -603,17 +603,31 @@ async function downloadMedia(){
 
     if(!downloadLinks.hd)throw new Error('Could not extract download link.');
 
+    // ── SMART UI LOGIC FOR SD BUTTON ──
+    const sdBtn = document.querySelector('[data-q="sd"]');
+    if (downloadLinks.hd === downloadLinks.sd) {
+        sdBtn.style.display = 'none'; // API ne fake size di hai toh button gayab kardo
+    } else {
+        sdBtn.style.display = ''; // Sach me do size hain toh dikhao
+    }
+
     // Populate preview
     const thumb=data?.[0]?.pictureUrl||null;
     const title=data?.[0]?.meta?.title||'Instagram video';
+    const imgEl = document.getElementById('thumbImg');
 
     if(thumb){
-      document.getElementById('thumbImg').src=thumb;
+      imgEl.src=thumb;
+      imgEl.style.display='block'; // Ensure image box is visible if previous request failed
       document.getElementById('thumbWrap').style.display='block';
     } else {
       document.getElementById('thumbWrap').style.display='none';
     }
+    
     document.getElementById('videoTitle').textContent=title;
+    
+    // Auto-select HD
+    document.querySelector('[data-q="hd"]').click();
     updateDownloadLink();
 
     // Show audio btn only if available
@@ -650,3 +664,88 @@ function copyLink(){
     showToast('success','🔗','Link copied to clipboard!');
   }).catch(()=>showToast('error','❌','Could not copy.'));
 }
+
+// ── History ──
+function saveHistory(title,url,thumb){
+  let h=JSON.parse(localStorage.getItem('rs_history')||'[]');
+  const exists=h.some(i=>i.url===url);
+  if(!exists){
+    h.unshift({
+      title:title.substring(0,50),
+      url,
+      thumb:thumb||null,
+      time:Date.now()
+    });
+    if(h.length>10)h=h.slice(0,10);
+    localStorage.setItem('rs_history',JSON.stringify(h));
+  }
+  renderHistory();
+}
+
+function renderHistory(){
+  const h=JSON.parse(localStorage.getItem('rs_history')||'[]');
+  const section=document.getElementById('historySection');
+  const list=document.getElementById('historyList');
+  if(!h.length){section.style.display='none';return;}
+  section.style.display='block';
+  list.innerHTML=h.map(item=>{
+    const ago=timeAgo(item.time);
+    const thumbHtml=item.thumb
+      ?`<img class="hist-thumb" src="${item.thumb}" alt="" loading="lazy" onerror="this.style.display='none'">`
+      :`<div class="hist-thumb-placeholder">🎬</div>`;
+    return`<div class="history-item">
+      ${thumbHtml}
+      <div class="hist-info">
+        <div class="hist-title">${escHtml(item.title)}</div>
+        <div class="hist-time">${ago}</div>
+      </div>
+      <a href="${item.url}" target="_blank" rel="noopener" class="hist-link">Open ↗</a>
+    </div>`;
+  }).join('');
+}
+
+function clearHistory(){
+  localStorage.removeItem('rs_history');
+  renderHistory();
+  showToast('info','🗑️','History cleared.');
+}
+
+// ── Time ago ──
+function timeAgo(ts){
+  const s=Math.floor((Date.now()-ts)/1000);
+  if(s<60)return'Just now';
+  if(s<3600)return Math.floor(s/60)+' min ago';
+  if(s<86400)return Math.floor(s/3600)+' hr ago';
+  return Math.floor(s/86400)+' days ago';
+}
+
+// ── Escape HTML ──
+function escHtml(s){
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ── Toast ──
+function showToast(type,icon,msg){
+  clearTimeout(toastTimer);
+  const toast=document.getElementById('toast');
+  const ti=document.getElementById('toastIcon');
+  const tm=document.getElementById('toastMsg');
+  toast.className='toast '+type;
+  ti.textContent=icon;
+  tm.textContent=msg;
+  toast.classList.add('show');
+  toastTimer=setTimeout(()=>toast.classList.remove('show'),3000);
+}
+
+// ── Init ──
+window.onload=()=>{
+  renderHistory();
+  // Register SW (PWA)
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/sw.js')
+      .catch(e=>console.log('SW:',e));
+  }
+};
+</script>
+</body>
+</html>

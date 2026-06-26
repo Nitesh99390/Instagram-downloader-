@@ -3,25 +3,37 @@ const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
 const path = require('path');
+const rateLimit = require('express-rate-limit');
+const { createClient } = require('@supabase/supabase-js');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Supabase Setup (Render Environment Variables se aayega)
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_KEY;
+let supabase = null;
+if (supabaseUrl && supabaseKey) {
+    supabase = createClient(supabaseUrl, supabaseKey);
+    console.log("✅ Supabase Connected!");
+}
+
 app.use(cors());
 app.use(express.json());
-
-// Public folder ko frontend ke roop me serve karna
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Frontend is '/api/download' par URL bhejega
-app.post('/api/download', async (req, res) => {
+// Rate Limiter: Spam rokne ke liye (5 minute me max 10 downloads per user)
+const apiLimiter = rateLimit({
+    windowMs: 5 * 60 * 1000, 
+    max: 10,
+    message: { error: "❌ Aapne limit cross kar di hai. 5 minute baad try karein." }
+});
+
+app.post('/api/download', apiLimiter, async (req, res) => {
     const { url } = req.body;
 
-    if (!url) {
-        return res.status(400).json({ error: "Please provide an Instagram URL" });
-    }
+    if (!url) return res.status(400).json({ error: "URL is required" });
 
-    // RapidAPI setup (Yahan env variable use ho raha hai)
     const options = {
         method: 'POST',
         url: 'https://instagram120.p.rapidapi.com/api/instagram/links',
@@ -35,13 +47,25 @@ app.post('/api/download', async (req, res) => {
 
     try {
         const response = await axios.request(options);
-        res.json(response.data);
+        const data = response.data;
+        
+        // Agar aap Supabase me history save karna chahte hain toh yahan logic aayega
+        if (supabase && data && data[0] && data[0].urls) {
+            // Example: Insert into a table named 'downloads'
+            /*
+            await supabase.from('downloads').insert([
+                { url: url, status: 'success', timestamp: new Date() }
+            ]);
+            */
+        }
+
+        res.json(data);
     } catch (error) {
-        console.error("API Error details:", error.response ? error.response.data : error.message);
-        res.status(500).json({ error: "Failed to fetch media from RapidAPI." });
+        console.error("API Error:", error.message);
+        res.status(500).json({ error: "Failed to fetch data from API" });
     }
 });
 
 app.listen(PORT, () => {
-    console.log(`Server is successfully running on port ${PORT}`);
+    console.log(`🚀 Server is running on port ${PORT}`);
 });

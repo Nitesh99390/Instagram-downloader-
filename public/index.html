@@ -115,7 +115,6 @@
             });
             
             const data = await response.json();
-            console.log("Backend Response:", data);
 
             let downloadLink = null;
 
@@ -134,9 +133,10 @@
                     <a href="${downloadLink}" target="_blank" class="download-btn">⬇️ Download File</a>
                 `;
             } else {
+                // DEBUGGING KA CODE YAHAN HAI
                 resultDiv.innerHTML = `
-                    <p class='error'>❌ Could not find the download link.</p>
-                    <p style="font-size: 13px; color: #777;">(Account private ho sakta hai ya link galat hai)</p>
+                    <p class='error'>❌ Link format alag hai. Ye code mujhe screenshot me bhejein:</p>
+                    <pre style="text-align: left; font-size: 11px; background: #ddd; padding: 10px; border-radius: 8px; overflow-x: auto; max-height: 250px; overflow-y: auto;">${JSON.stringify(data, null, 2)}</pre>
                 `;
             }
         } catch (error) {

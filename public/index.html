@@ -5,10 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#d62976">
-    <title>Pro IG Downloader with Auth</title>
-    
-    <!-- Supabase JS Library CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+    <title>Pro IG Downloader (Firebase)</title>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', sans-serif; }
@@ -51,6 +48,7 @@
         /* Views management */
         #auth-view { display: block; }
         #downloader-view { display: none; }
+        #loading-view { display: none; margin-top: 100px; font-size: 18px; font-weight: bold; }
 
         .user-badge {
             font-size: 12px; color: #4CAF50; background: rgba(76, 175, 80, 0.1);
@@ -73,16 +71,19 @@
 </head>
 <body>
 
-<!-- 1. AUTH INTERFACE (LOGIN/SIGNUP) -->
+<!-- INITIAL LOADING -->
+<div id="loading-view">⏳ Loading System...</div>
+
+<!-- 1. AUTH INTERFACE -->
 <div class="glass-container" id="auth-view">
     <h2>Welcome Back</h2>
-    <p class="subtitle">Please Login to use IG Downloader</p>
+    <p class="subtitle">Login via Firebase to use IG Downloader</p>
     
     <input type="email" id="auth-email" placeholder="Enter Email ID">
     <input type="password" id="auth-password" placeholder="Enter Password">
     
-    <button class="btn-main" onclick="handleLogin()">Login</button>
-    <button class="btn-sec" onclick="handleSignup()">Naya Account Banayein (Signup)</button>
+    <button class="btn-main" id="loginBtn">Login</button>
+    <button class="btn-sec" id="signupBtn">Naya Account Banayein (Signup)</button>
     
     <div id="auth-msg"></div>
 </div>
@@ -94,9 +95,9 @@
     <p class="subtitle">Download Reels & Videos instantly</p>
     
     <input type="text" id="ig-url" placeholder="Paste link here...">
-    <button class="btn-main" id="fetchBtn" onclick="downloadMedia()">Get Video</button>
+    <button class="btn-main" id="fetchBtn">Get Video</button>
     
-    <button class="btn-sec" style="margin-top: 10px;" onclick="handleLogout()">Logout</button>
+    <button class="btn-sec" style="margin-top: 10px;" id="logoutBtn">Logout</button>
     
     <div id="status-msg"></div>
 
@@ -107,75 +108,78 @@
     </div>
 </div>
 
-<script>
-    // Variable naam change kiya hai taaki browser se clash na ho
-    let supabaseClient = null;
+<!-- Firebase Modular SDK -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+    // YAHAN APNI FIREBASE CONFIGURATION DAALEIN
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
     let currentUserEmail = null;
 
-    // Server se keys lekar Supabase Init karna
-    async function initSupabase() {
-        try {
-            const res = await fetch('/api/config');
-            const config = await res.json();
-            
-            // Global supabase object se client create kar rahe hain
-            supabaseClient = window.supabase.createClient(config.supabaseUrl, config.supabaseKey);
-            
-            // Check active session
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            if (session) {
-                showDownloader(session.user.email);
-            }
-        } catch (err) {
-            console.error("Supabase load error:", err);
-            document.getElementById('auth-msg').innerHTML = "Server se connect hone me error aaya.";
-        }
-    }
+    // UI Switching Functions
+    const uiLoading = document.getElementById('loading-view');
+    const uiAuth = document.getElementById('auth-view');
+    const uiDownloader = document.getElementById('downloader-view');
 
-    // UI Switching
     function showDownloader(email) {
         currentUserEmail = email;
-        document.getElementById('auth-view').style.display = 'none';
-        document.getElementById('downloader-view').style.display = 'block';
+        uiLoading.style.display = 'none';
+        uiAuth.style.display = 'none';
+        uiDownloader.style.display = 'block';
         document.getElementById('user-display').innerText = `Logged in: ${email}`;
     }
 
     function showAuth() {
         currentUserEmail = null;
-        document.getElementById('auth-view').style.display = 'block';
-        document.getElementById('downloader-view').style.display = 'none';
+        uiLoading.style.display = 'none';
+        uiAuth.style.display = 'block';
+        uiDownloader.style.display = 'none';
         document.getElementById('auth-msg').innerHTML = "";
     }
 
-    // Auth Operations
-    async function handleLogin() {
+    // Check Auth State on Load
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            showDownloader(user.email);
+        } else {
+            showAuth();
+        }
+    });
+
+    // Auth Event Listeners
+    document.getElementById('loginBtn').addEventListener('click', async () => {
         const email = document.getElementById('auth-email').value.trim();
         const password = document.getElementById('auth-password').value;
         const msg = document.getElementById('auth-msg');
-
-        if (!supabaseClient) {
-            msg.innerHTML = "System loading... please wait."; return;
-        }
 
         msg.innerHTML = "⏳ Logging in..."; msg.style.color = "#fff";
-
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
-        if (error) {
-            msg.innerHTML = `❌ ${error.message}`; msg.style.color = "#ff4d4d";
-        } else {
+        try {
+            await signInWithEmailAndPassword(auth, email, password);
             msg.innerHTML = "✅ Success!";
-            showDownloader(data.user.email);
+        } catch (error) {
+            msg.innerHTML = `❌ ${error.message}`; msg.style.color = "#ff4d4d";
         }
-    }
+    });
 
-    async function handleSignup() {
+    document.getElementById('signupBtn').addEventListener('click', async () => {
         const email = document.getElementById('auth-email').value.trim();
         const password = document.getElementById('auth-password').value;
         const msg = document.getElementById('auth-msg');
-
-        if (!supabaseClient) {
-            msg.innerHTML = "System loading... please wait."; return;
-        }
 
         if(password.length < 6) {
             msg.innerHTML = "❌ Password kam se kam 6 characters ka hona chahiye!";
@@ -183,25 +187,20 @@
         }
 
         msg.innerHTML = "⏳ Creating Account..."; msg.style.color = "#fff";
-
-        const { data, error } = await supabaseClient.auth.signUp({ email, password });
-        if (error) {
+        try {
+            await createUserWithEmailAndPassword(auth, email, password);
+            msg.innerHTML = "✅ Account Created!";
+        } catch (error) {
             msg.innerHTML = `❌ ${error.message}`; msg.style.color = "#ff4d4d";
-        } else {
-            msg.innerHTML = "✅ Account Created! Aap ab Login kar sakte hain.";
-            msg.style.color = "#4CAF50";
         }
-    }
+    });
 
-    async function handleLogout() {
-        if (supabaseClient) {
-            await supabaseClient.auth.signOut();
-        }
-        showAuth();
-    }
+    document.getElementById('logoutBtn').addEventListener('click', async () => {
+        await signOut(auth);
+    });
 
-    // Download Handler
-    async function downloadMedia() {
+    // Download Logic & Firestore History
+    document.getElementById('fetchBtn').addEventListener('click', async () => {
         const urlInput = document.getElementById('ig-url').value.trim();
         const statusMsg = document.getElementById('status-msg');
         const fetchBtn = document.getElementById('fetchBtn');
@@ -232,6 +231,14 @@
                 downloadLink = data[0].urls[0].url;
             }
 
+            // Save to Firestore (Downloads Collection)
+            await addDoc(collection(db, "downloads"), {
+                user_email: currentUserEmail,
+                url: urlInput,
+                status: downloadLink ? "Success" : "Failed",
+                timestamp: serverTimestamp()
+            });
+
             if(downloadLink) {
                 statusMsg.innerHTML = "✅ Ready to Download!";
                 statusMsg.style.color = "#4CAF50";
@@ -244,7 +251,7 @@
                 document.getElementById('video-title').innerText = title.substring(0, 50) + "...";
                 previewBox.style.display = "block";
             } else {
-                throw new Error("Link format badal gaya hai, console check karein.");
+                throw new Error("Link format badal gaya hai.");
             }
         } catch (error) {
             statusMsg.innerHTML = `❌ Error: ${error.message}`;
@@ -252,15 +259,8 @@
         } finally {
             fetchBtn.disabled = false;
         }
-    }
+    });
 
-    // Load Service Worker & Init App
-    window.onload = () => {
-        initSupabase();
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js').catch(err => console.log(err));
-        }
-    };
 </script>
 </body>
 </html>

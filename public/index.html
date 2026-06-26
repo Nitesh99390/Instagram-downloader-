@@ -11,6 +11,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 
 <style>
+/* ──── GLOBAL RESET ──── */
 *{box-sizing:border-box;margin:0;padding:0}
 
 :root{
@@ -649,87 +650,3 @@ function copyLink(){
     showToast('success','🔗','Link copied to clipboard!');
   }).catch(()=>showToast('error','❌','Could not copy.'));
 }
-
-// ── History ──
-function saveHistory(title,url,thumb){
-  let h=JSON.parse(localStorage.getItem('rs_history')||'[]');
-  const exists=h.some(i=>i.url===url);
-  if(!exists){
-    h.unshift({
-      title:title.substring(0,50),
-      url,
-      thumb:thumb||null,
-      time:Date.now()
-    });
-    if(h.length>10)h=h.slice(0,10);
-    localStorage.setItem('rs_history',JSON.stringify(h));
-  }
-  renderHistory();
-}
-
-function renderHistory(){
-  const h=JSON.parse(localStorage.getItem('rs_history')||'[]');
-  const section=document.getElementById('historySection');
-  const list=document.getElementById('historyList');
-  if(!h.length){section.style.display='none';return;}
-  section.style.display='block';
-  list.innerHTML=h.map(item=>{
-    const ago=timeAgo(item.time);
-    const thumbHtml=item.thumb
-      ?`<img class="hist-thumb" src="${item.thumb}" alt="" loading="lazy" onerror="this.style.display='none'">`
-      :`<div class="hist-thumb-placeholder">🎬</div>`;
-    return`<div class="history-item">
-      ${thumbHtml}
-      <div class="hist-info">
-        <div class="hist-title">${escHtml(item.title)}</div>
-        <div class="hist-time">${ago}</div>
-      </div>
-      <a href="${item.url}" target="_blank" rel="noopener" class="hist-link">Open ↗</a>
-    </div>`;
-  }).join('');
-}
-
-function clearHistory(){
-  localStorage.removeItem('rs_history');
-  renderHistory();
-  showToast('info','🗑️','History cleared.');
-}
-
-// ── Time ago ──
-function timeAgo(ts){
-  const s=Math.floor((Date.now()-ts)/1000);
-  if(s<60)return'Just now';
-  if(s<3600)return Math.floor(s/60)+' min ago';
-  if(s<86400)return Math.floor(s/3600)+' hr ago';
-  return Math.floor(s/86400)+' days ago';
-}
-
-// ── Escape HTML ──
-function escHtml(s){
-  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── Toast ──
-function showToast(type,icon,msg){
-  clearTimeout(toastTimer);
-  const toast=document.getElementById('toast');
-  const ti=document.getElementById('toastIcon');
-  const tm=document.getElementById('toastMsg');
-  toast.className='toast '+type;
-  ti.textContent=icon;
-  tm.textContent=msg;
-  toast.classList.add('show');
-  toastTimer=setTimeout(()=>toast.classList.remove('show'),3000);
-}
-
-// ── Init ──
-window.onload=()=>{
-  renderHistory();
-  if('serviceWorker' in navigator){
-    navigator.serviceWorker.register('/sw.js')
-      .catch(e=>console.log('SW:',e));
-  }
-};
-</script>
-</body>
-</html>

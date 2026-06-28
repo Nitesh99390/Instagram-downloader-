@@ -10,13 +10,17 @@ const morgan = require('morgan');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// ── FIXED: Trust Proxy for Render ──
+// Ye line rate limiter ko Render ke proxy ke peeche sahi IP address detect karne me madad karti hai
+app.set('trust proxy', 1);
+
 // ── Security Headers ──
 app.use(helmet({
     contentSecurityPolicy: false, 
     crossOriginEmbedderPolicy: false
 }));
 
-// ── CORS Config (Render ke liye Fixed) ──
+// ── CORS Config ──
 app.use(cors());
 
 // ── Body Parser ──
